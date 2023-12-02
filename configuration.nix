@@ -10,22 +10,11 @@
       ./hardware-configuration.nix
     ];
 
-  # Bootloader
-  # boot.loader.systemd-boot.enable = true;
-  boot.loader = {
-    efi = {
-     canTouchEfiVariables = true;
-     efiSysMountPoint = "/boot/efi";
-    };
-    grub = {
-      enable = true;
-      efiSupport = true;
-      device = "nodev";
-      useOSProber = true;
-    };
-  };
+  # Bootloader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "machno"; # Define your hostname.
+  networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -53,65 +42,35 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
-  # Enable i3 window manager.
-  services.xserver.autorun = false;
-  services.xserver.desktopManager.xterm.enable = false;
-  services.xserver.windowManager.i3.enable = true;
-
-  # Enable the KDE Plasma Desktop Environment.
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
-
-  # Configure keymap in X11
-  services.xserver = {
-    layout = "us";
-    xkbVariant = "";
-  };
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
-  # Enable sound with pipewire.
-  sound.enable = true;
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
-  };
-  
- 
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.mallory = {
-    isNormalUser = true;
-    description = "Mallory Mable";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      firefox
-      google-chrome
-      signal-desktop
-
-      slack
-      gh
-      vscode
-      
-      neofetch
-    ];
+  users.users = 
+  {
+    mallory-iosis = {
+      isNormalUser = true;
+      description = "work account";
+      packages = with pkgs; [
+        # Work tools
+	# This account exists so I don't touch google while messing around
+	google-chrome
+	slack
+	vscode
+      ];
+    };
+    mallory = {
+      isNormalUser = true;
+      description = "Mallory Mable";
+      extraGroups = [ "networkmanager" "wheel" ];
+      packages = with pkgs; [
+        # I don't want to access discord in a work eviroment
+	discord
+	# 3-D printing tool
+	cura
+      ];
+    };
   };
+
+  # Wayland windows manager
+  programs.sway.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -119,10 +78,29 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    wget
-    ];
+     # Text editor 
+     neovim
+     # File explorer
+     ranger
+     # Version control
+     git
+     # Good terminal
+     konsole
+     # c compiler
+     gcc
+     # Rust
+     rustc
+     cargo
+     # neofetch
+     neofetch
+     # Tools that use the internet
+     firefox
+     gh
+     signal-desktop
+  #  wget
+  ];
 
+  
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
