@@ -1,19 +1,23 @@
 icons_format = "{icon}"
 
 [theme]
-theme = "solarized-dark"
+theme = "dracula"
 [theme.overrides]
 idle_bg = "#123456"
-idle_fg = "#abcdef"
-
+separator = ""
 [icons]
-icons = "awesome4"
-[icons.overrides]
-bat = ["|E|", "|_|", "|=|", "|F|"]
-bat_charging = "|^| "
+icons = "none"
+
 
 [[block]]
 block = "cpu"
+# Add memory usage information here
+format = " CPU: $utilization "
+
+[[block]]
+block = "memory"
+format = " RAM: $mem_total_used_percents.eng(w:2) "
+format_alt = " RAM: $mem_used GB / $mem_total GB "
 
 [[block]]
 block = "disk_space"
@@ -23,20 +27,16 @@ alert_unit = "GB"
 interval = 20
 warning = 20.0
 alert = 10.0
-format = " $icon root: $available.eng(w:2) "
+format = " df: $available.eng(w:2) "
+
+# Removed sound block
 
 [[block]]
-block = "memory"
-format = " $icon $mem_total_used_percents.eng(w:2) "
-format_alt = " $icon_swap $swap_used_percents.eng(w:2) "
-
-[[block]]
-block = "sound"
-[[block.click]]
-button = "left"
-cmd = "pavucontrol"
+block = "battery"
+format = "$icon $percentage {$time }"
 
 [[block]]
 block = "time"
-interval = 5
-format = " $timestamp.datetime(f:'%a %d/%m %R') "
+interval = 3
+format = " $timestamp.datetime(f:'%a %m/%d %I:%M %p' ) "
+
