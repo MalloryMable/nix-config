@@ -37,7 +37,7 @@ format = " df: $available.eng(w:2) "
 
 [[block]]
 block = "battery"
-format = "$icon $percentage $time"
+format = "$icon: $percentage $time"
 
 [[block]]
 block = "time"
