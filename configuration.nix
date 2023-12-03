@@ -4,6 +4,12 @@
 
 { config, pkgs, ... }:
 
+nix.gc = {
+  automatic = true;
+  dates = "weekly";
+  options = "--delete-older-than 30d";
+};
+
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -14,7 +20,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "max"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -50,10 +56,10 @@
       description = "work account";
       packages = with pkgs; [
         # Work tools
-	# This account exists so I don't touch google while messing around
-	google-chrome
-	slack
-	vscode
+        # This account exists so I don't touch google while messing around
+        google-chrome
+        slack
+        vscode
       ];
     };
     mallory = {
@@ -62,15 +68,16 @@
       extraGroups = [ "networkmanager" "wheel" ];
       packages = with pkgs; [
         # I don't want to access discord in a work eviroment
-	discord
-	# 3-D printing tool
-	cura
+        discord
+        # 3-D printing tool
+        cura
       ];
     };
   };
 
   # Wayland windows manager
   programs.sway.enable = true;
+  #  programs.i3status-rust.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -86,11 +93,15 @@
      git
      # Good terminal
      konsole
+     # Status bar
+     i3status-rust
      # c compiler
      gcc
      # Rust
      rustc
      cargo
+     # Rust lsp tool
+     rust-analyzer
      # neofetch
      neofetch
      # Tools that use the internet
