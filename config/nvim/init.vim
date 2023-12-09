@@ -5,6 +5,18 @@
 set number
 set clipboard=unnamedplus
 
+let g:clipboard = {    
+\   'name': 'wl-clipboard',
+\   'copy': {
+\      '+': 'wl-copy',
+\      '*': 'wl-copy',
+\    },
+\   'paste': {
+\      '+': 'wl-paste',
+\      '*': 'wl-paste',
+\   },
+\   'cache_enabled': 0,
+\ }
 
 set statusline=%f\ %h%w%m%r
 set statusline+=%{FugitiveStatusline()}
@@ -53,6 +65,9 @@ lua require('config')
 
 syntax enable
 filetype plugin indent on
+
+" For faster insert mode exits
+inoremap jj <Esc>
 
 " let g:fzf_layout = {
 "   'up':'~90%',

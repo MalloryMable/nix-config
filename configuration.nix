@@ -4,11 +4,7 @@
 
 { config, pkgs, ... }:
 
-nix.gc = {
-  automatic = true;
-  dates = "weekly";
-  options = "--delete-older-than 30d";
-};
+
 
 {
   imports =
@@ -16,11 +12,17 @@ nix.gc = {
       ./hardware-configuration.nix
     ];
 
+    nix.gc = {
+        automatic = true;
+        dates = "weekly";
+        options = "--delete-older-than 30d";
+    };
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "max"; # Define your hostname.
+  networking.hostName = "nix"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -87,6 +89,8 @@ nix.gc = {
   environment.systemPackages = with pkgs; [
      # Text editor 
      neovim
+     # Wayland clipboard
+     wl-clipboard
      # File explorer
      ranger
      # Version control
