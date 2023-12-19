@@ -202,6 +202,25 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 #
+# Brightness and audio controls
+#
+    # Increase brightness
+    bindsym XF86MonBrightnessUp exec light -A 10
+
+    # Decrease brightness
+    bindsym XF86MonBrightnessDown exec light -U 10
+    # Increase volume
+    bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +10%
+
+    # Decrease volume
+    bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -10%
+
+    # Mute/unmute
+    bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+
+
+
+#
 # Status Bar:
 #
 # Read `man 5 sway-bar` for more information about this section.

@@ -12,25 +12,30 @@
       ./hardware-configuration.nix
     ];
 
-    nix.gc = {
-        automatic = true;
-        dates = "weekly";
-        options = "--delete-older-than 30d";
-    };
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nix"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  # Audio services
+  hardware.pulseaudio.enable = true;
 
+  networking.hostName = "nixos"; # Define your hostname.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
   networking.networkmanager.enable = true;
+  services.tailscale.enable = true;
+  
 
   # Set your time zone.
   time.timeZone = "America/New_York";
@@ -50,14 +55,22 @@
     LC_TIME = "en_US.UTF-8";
   };
 
+  # Explicit permission to use obsidian
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-24.8.6"
+  ];
+
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users = 
   {
     mallory-iosis = {
       isNormalUser = true;
       description = "work account";
+      extraGroups = [ "networkmanager" "wheel" "audio" "video"];
       packages = with pkgs; [
         # Work tools
+	obsidian
         # This account exists so I don't touch google while messing around
         google-chrome
         slack
@@ -67,7 +80,7 @@
     mallory = {
       isNormalUser = true;
       description = "Mallory Mable";
-      extraGroups = [ "networkmanager" "wheel" ];
+      extraGroups = [ "networkmanager" "wheel" "audio" "video" "vboxusers" ];
       packages = with pkgs; [
         # I don't want to access discord in a work eviroment
         discord
@@ -86,38 +99,40 @@
 
   # Virtual Machine tool
   virtualisation.virtualbox.host.enable = true;
-  users.extraGroups.vboxusers.members = [ "mallory" ];
+  #users.extraGroups.vboxusers.members = [ "mallory" ];
 
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-     # Text editor 
-     neovim
-     # Wayland clipboard
-     wl-clipboard
-     # File explorer
-     ranger
-     # Version control
-     git
-     # Good terminal
-     konsole
-     # Status bar
-     i3status-rust
-     # c compiler
-     gcc
-     # Rust
-     rustc
-     cargo
-     # Rust lsp tool
-     rust-analyzer
-     # neofetch
-     neofetch
-     # Tools that use the internet
-     firefox
-     gh
-     signal-desktop
-  #  wget
+    # Text editor 
+    neovim
+    # Wayland clipboard
+    wl-clipboard
+    # File explorer
+    ranger
+    # Version control
+    git
+    # Good terminal
+    konsole
+    # Status bar
+    i3status-rust
+    # c compiler
+    gcc
+    # Swift toolchain
+    swift
+    # Rust
+    rustc
+    cargo
+    # Rust lsp tool
+    rust-analyzer
+    # neofetch
+    neofetch
+    # Tools that use the internet
+    firefox
+    gh
+    signal-desktop
+    #  wget
   ];
 
   

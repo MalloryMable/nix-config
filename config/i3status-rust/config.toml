@@ -28,12 +28,15 @@ block = "disk_space"
 path = "/"
 info_type = "available"
 alert_unit = "GB"
-interval = 20
+interval = 10.0
 warning = 20.0
 alert = 10.0
 format = " df: $available.eng(w:2) "
 
-# Removed sound block
+[[block]]
+block = "sound"
+driver = "pulseaudio"
+format = "Vol: $volume| "
 
 [[block]]
 block = "battery"
@@ -42,5 +45,5 @@ format = "$icon: $percentage $time"
 [[block]]
 block = "time"
 interval = 3
-format = " $timestamp.datetime(f:'%a %m/%d %I:%M %p' ) "
+format = " $timestamp.datetime(f:'%a %m/%d %I:%M %p') "
 
