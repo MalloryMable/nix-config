@@ -36,7 +36,7 @@ format = " df: $available.eng(w:2) "
 [[block]]
 block = "sound"
 driver = "pulseaudio"
-format = "Vol: {$volume|} "
+format = "$icon{: $volume|} "
 
 [[block]]
 block = "battery"
