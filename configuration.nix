@@ -12,11 +12,14 @@
       ./hardware-configuration.nix
     ];
 
+  # Soft and hard max on stored generations
   nix.gc = {
     automatic = true;
     dates = "weekly";
     options = "--delete-older-than 30d";
   };
+
+  
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -35,7 +38,7 @@
   };
 
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "max"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   
   # Configure network proxy if necessary
@@ -65,24 +68,21 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Explicit permission to use obsidian
-  nixpkgs.config.permittedInsecurePackages = [
-    "electron-24.8.6"
-  ];
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = true;
+  };
 
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users = 
   {
-    mallory-iosis = {
+    mallory-swarm = {
       isNormalUser = true;
       description = "work account";
       extraGroups = [ "networkmanager" "wheel" "audio" "video"];
       packages = with pkgs; [
-        # Work tools
-	obsidian
         # This account exists so I don't touch google while messing around
-        google-chrome
         slack
         vscode
       ];
@@ -92,8 +92,6 @@
       description = "Mallory Mable";
       extraGroups = [ "networkmanager" "wheel" "audio" "video" "vboxusers" ];
       packages = with pkgs; [
-        # I don't want to access discord in a work eviroment
-        discord
         # 3-D printing tool
         cura
       ];
@@ -112,6 +110,11 @@
   #users.extraGroups.vboxusers.members = [ "mallory" ];
 
 
+  fonts.packages = with pkgs; [
+    font-awesome
+    (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"]; })
+  ];
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -129,8 +132,8 @@
     i3status-rust
     # c compiler
     gcc
-    # Swift toolchain
-    swift
+    # Python
+    python3
     # Rust
     rustc
     cargo
@@ -142,6 +145,7 @@
     firefox
     gh
     signal-desktop
+    discord
     #  wget
   ];
 
