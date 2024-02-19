@@ -109,7 +109,7 @@
   virtualisation.virtualbox.host.enable = true;
   #users.extraGroups.vboxusers.members = [ "mallory" ];
 
-
+  # Fonts used for their icon packages
   fonts.packages = with pkgs; [
     font-awesome
     (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"]; })
@@ -130,8 +130,10 @@
     konsole
     # Status bar
     i3status-rust
-    # c compiler
+    # C compiler
     gcc
+    # C LSP
+    clang-tools
     # Python
     python3
     # Rust
