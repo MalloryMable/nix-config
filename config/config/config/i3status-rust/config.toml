@@ -1,0 +1,49 @@
+icons_format = "{icon}"
+
+[theme]
+theme = "dracula"
+[theme.overrides]
+idle_bg = "#123456"
+separator = ""
+[icons]
+icons = "none"
+
+[[block]]
+block = "net"
+format = " $icon {$signal_strength $ssid $frequency|Wired connection}"
+format_alt = "$device"
+
+[[block]]
+block = "cpu"
+# Add memory usage information here
+format = " CPU: $utilization "
+
+[[block]]
+block = "memory"
+format = " RAM: $mem_total_used_percents.eng(w:2) "
+format_alt = " RAM: $mem_used GB / $mem_total GB "
+
+[[block]]
+block = "disk_space"
+path = "/"
+info_type = "available"
+alert_unit = "GB"
+interval = 10.0
+warning = 20.0
+alert = 10.0
+format = " df: $available.eng(w:2) "
+
+[[block]]
+block = "sound"
+driver = "pulseaudio"
+format = "$icon{: $volume|} "
+
+[[block]]
+block = "battery"
+format = "{$icon}: {$percentage $time} "
+
+[[block]]
+block = "time"
+interval = 3
+format = " $timestamp.datetime(f:'%a %m/%d %I:%M %p') "
+
