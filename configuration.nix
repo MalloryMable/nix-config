@@ -38,7 +38,7 @@
   };
 
 
-  networking.hostName = "max"; # Define your hostname.
+  networking.hostName = "machno"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   
   # Configure network proxy if necessary
