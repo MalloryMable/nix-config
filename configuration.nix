@@ -4,8 +4,6 @@
 
 { config, pkgs, ... }:
 
-
-
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -47,6 +45,24 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+
+  # Enabling NAS Shares
+  fileSystems."/Mallory" = {
+    device = "192.168.0.14:/Mallory";
+    fsType = "nfs";
+  };
+
+
+  fileSystems."/House-Share" = {
+    device = "192.168.0.14:/House-Share";
+    fsType = "nfs";
+  };
+
+  
+  fileSystems."/Public" = {
+    device = "192.168.0.14:/Public";
+    fsType = "nfs";
+  };
 
   # Set your time zone.
   time.timeZone = "America/New_York";
@@ -138,6 +154,8 @@
     rust-analyzer
     # neofetch
     neofetch
+    # Network tool(s)
+    nfs-utils
     # Tools that use the internet
     firefox
     gh
