@@ -53,12 +53,6 @@
   };
 
 
-  fileSystems."/House-Share" = {
-    device = "192.168.0.14:/House-Share";
-    fsType = "nfs";
-  };
-
-  
   fileSystems."/Public" = {
     device = "192.168.0.14:/Public";
     fsType = "nfs";
@@ -152,16 +146,15 @@
     cargo
     # Rust lsp tool
     rust-analyzer
-    # neofetch
-    neofetch
     # Network tool(s)
     nfs-utils
+    # Password Manager
+    kpcli
     # Tools that use the internet
     firefox
     gh
     signal-desktop
     discord
-    #  wget
   ];
 
   
