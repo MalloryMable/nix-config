@@ -137,15 +137,17 @@
     i3status-rust
     # C compiler
     gcc
-    # C LSP
+    # C lsp
     clang-tools
     # Python
     python3
-    # Rust
+    # Rust toolchain
     rustc
     cargo
-    # Rust lsp tool
+    # Rust lsp
     rust-analyzer
+    # Java lsp
+    vimPlugins.nvim-jdtls
     # Network tool(s)
     nfs-utils
     # Password Manager
