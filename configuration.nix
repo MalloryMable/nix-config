@@ -17,8 +17,6 @@
     options = "--delete-older-than 30d";
   };
 
-  
-
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -27,7 +25,10 @@
   programs.light.enable = true;
 
   # Audio services
-  hardware.pulseaudio.enable = true;
+  # hardware.pulseaudio.enable = true;
+
+  # Enabble sound.
+  # sound.enable = true;
 
   # Bluetooth
   hardware.bluetooth = {
@@ -35,8 +36,7 @@
     powerOnBoot = true;
   };
 
-
-  networking.hostName = "max"; # Define your hostname.
+  networking.hostName = "machno"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   
   # Configure network proxy if necessary
@@ -45,18 +45,6 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
-
-  # Enabling NAS Shares
-  fileSystems."/Mallory" = {
-    device = "192.168.0.14:/Mallory";
-    fsType = "nfs";
-  };
-
-
-  fileSystems."/Public" = {
-    device = "192.168.0.14:/Public";
-    fsType = "nfs";
-  };
 
   # Set your time zone.
   time.timeZone = "America/New_York";
@@ -82,23 +70,13 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users = 
   {
-    mallory-swarm = {
-      isNormalUser = true;
-      description = "work account";
-      extraGroups = [ "networkmanager" "wheel" "audio" "video"];
-      packages = with pkgs; [
-        # This account exists so I don't touch google while messing around
-        slack
-        vscode
-      ];
-    };
     mallory = {
       isNormalUser = true;
       description = "Mallory Mable";
       extraGroups = [ "networkmanager" "wheel" "audio" "video" "vboxusers" ];
       packages = with pkgs; [
         # 3-D printing tool
-        cura
+        # cura
       ];
     };
   };
@@ -125,14 +103,14 @@
   environment.systemPackages = with pkgs; [
     # Text editor 
     neovim
+    # Menu for starting apps
+    dmenu-rs
     # Wayland clipboard
     wl-clipboard
     # File explorer
     ranger
     # Version control
     git
-    # Good terminal
-    konsole
     # Status bar
     i3status-rust
     # C compiler
@@ -146,12 +124,12 @@
     cargo
     # Rust lsp
     rust-analyzer
-    # Java lsp
-    vimPlugins.nvim-jdtls
+    # Password Manager
+    keepassxc
     # Network tool(s)
     nfs-utils
-    # Password Manager
-    kpcli
+    # Music
+    mpc-cli
     # Tools that use the internet
     firefox
     gh

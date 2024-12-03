@@ -41,11 +41,6 @@ driver = "pulseaudio"
 format = "  $icon {$volume|}"
 
 [[block]]
-block = "battery"
-format = "   $icon {$percentage} {$time}"
-full_format = "   $icon"
-
-[[block]]
 block = "time"
 interval = 3
 format = "  $icon $timestamp.datetime(f:'%a %m/%d %I:%M %p')"
