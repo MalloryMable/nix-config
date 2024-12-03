@@ -17,8 +17,6 @@
     options = "--delete-older-than 30d";
   };
 
-  
-
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -26,14 +24,23 @@
   # Backlight controller
   programs.light.enable = true;
 
+<<<<<<< HEAD
+=======
+  # Audio services
+  # hardware.pulseaudio.enable = true;
+
+  # Enabble sound.
+  # sound.enable = true;
+
+>>>>>>> 4719d5c (updated config for nix 24.11)
   # Bluetooth
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
   };
 
-
-  networking.hostName = "max"; # Define your hostname.
+  networking.hostName = "machno"; # Define your hostname.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -138,7 +145,6 @@
     discord
   ];
 
-  
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -165,5 +171,4 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
-
 }
