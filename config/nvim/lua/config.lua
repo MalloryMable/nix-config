@@ -7,6 +7,12 @@ local nvim_lsp = require('lspconfig')
 -- Enable Rust LSP(rust-analyzer)
 nvim_lsp.rust_analyzer.setup{}
 
+-- Enable Python LSP(pyright)
+nvim_lsp.pyright.setup{}
+
+-- Enable LaTeX LSP(texlab)
+nvim_lsp.texlab.setup{}
+
 -- Enable C/C++ LSP (clangd)
 nvim_lsp.clangd.setup{
     cmd = { "clangd", "--background-index", "--suggest-missing-includes" },

@@ -114,13 +114,19 @@
     clang-tools
     # Python
     python3
+    # Python LSP
+    pyright
     # Rust toolchain
     rustc
     cargo
     # Rust lsp
     rust-analyzer
     # Java lsp
-    vimPlugins.nvim-jdtls
+    #vimPlugins.nvim-jdtls
+    # LaTeX Build tools
+    texliveFull
+    # LaTeX lsp
+    texlab
     # Network tool(s)
     nfs-utils
     # Password Manager
