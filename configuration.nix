@@ -24,12 +24,6 @@
   # Backlight controller
   programs.light.enable = true;
 
-  # Audio services
-  # hardware.pulseaudio.enable = true;
-
-  # Enabble sound.
-  # sound.enable = true;
-
   # Bluetooth
   hardware.bluetooth = {
     enable = true;
@@ -83,14 +77,12 @@
 
   # Wayland windows manager
   programs.sway.enable = true;
-  #  programs.i3status-rust.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   # Virtual Machine tool
   virtualisation.virtualbox.host.enable = true;
-  #users.extraGroups.vboxusers.members = [ "mallory" ];
 
   # Fonts used for their icon packages
   fonts.packages = with pkgs; [
@@ -124,12 +116,14 @@
     cargo
     # Rust lsp
     rust-analyzer
+    # LaTeX Build tools
+    texliveFull
+    # LaTeX lsp
+    texlab
     # Password Manager
     keepassxc
     # Network tool(s)
     nfs-utils
-    # Music
-    mpc-cli
     # Tools that use the internet
     firefox
     gh

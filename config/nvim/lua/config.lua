@@ -1,11 +1,14 @@
 -- lsp server variable
 local nvim_lsp = require('lspconfig')
 
--- -- Enable Swift LSP(source kit)
--- nvim_lsp.sourcekit.setup{}
-
 -- Enable Rust LSP(rust-analyzer)
 nvim_lsp.rust_analyzer.setup{}
+
+-- Enable Python LSP(pyright)
+nvim_lsp.pyright.setup{}
+
+-- Enable LaTeX LSP(texlab)
+nvim_lsp.texlab.setup{}
 
 -- Enable C/C++ LSP (clangd)
 nvim_lsp.clangd.setup{
@@ -14,9 +17,6 @@ nvim_lsp.clangd.setup{
     root_dir = nvim_lsp.util.root_pattern("compile_commands.json", "compile_flags.txt", ".git"),
     -- Additional configuration options can be set here
 }
-
---  -- Enable Java LSP (nvim-jdtls)
--- nvim_lsp.nvim-jdtls.setup{}
 
 -- Enable auto completiions
 local cmp = require'cmp'
@@ -46,7 +46,7 @@ cmp.setup({
 -- Eanble treesitter
 local ts = require("nvim-treesitter")
 ts.setup {
-  ensure_installed = { "python", "css", "lua", "vim", "json", "toml", "rust", "java", "c" },
+  ensure_installed = { "python", "css", "lua", "vim", "json", "toml", "rust", "c" },
   ignore_install = {}, -- List of parsers to ignore installing
   highlight = {
     enable = true, -- false will disable the whole extension
