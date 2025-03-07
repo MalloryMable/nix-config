@@ -16,7 +16,6 @@
     dates = "weekly";
     options = "--delete-older-than 30d";
   };
-  
   # Bootloader.
   boot.loader = {
     grub = {
@@ -39,6 +38,7 @@
   };
 
   networking.hostName = "max"; # Define your hostname.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -140,7 +140,7 @@
     signal-desktop
     discord
   ];
-  
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;

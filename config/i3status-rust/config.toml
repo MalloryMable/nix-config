@@ -1,0 +1,47 @@
+icons_format = "{icon}"
+
+[theme]
+theme = "dracula"
+
+[theme.overrides]
+idle_bg = "#123456"
+# I think the seperator needs a different char set to work correctly so I just removed it
+separator = " "
+
+[icons]
+icons = "awesome6"
+
+[[block]]
+block = "net"
+format = " $icon {$signal_strength $ssid $frequency|Wired connection}"
+format_alt = "  $device"
+
+[[block]]
+block = "cpu"
+format = " $icon $utilization"
+
+[[block]]
+block = "memory"
+format = "  $icon $mem_total_used_percents.eng(w:2)"
+format_alt = " RAM: $mem_used / $mem_total"
+
+[[block]]
+block = "disk_space"
+path = "/"
+info_type = "available"
+alert_unit = "MB"
+interval = 0.1
+warning = 20.0
+alert = 10.0
+format = "  $icon $available.eng(w:1)"
+
+[[block]]
+block = "sound"
+driver = "pulseaudio"
+format = "  $icon {$volume|}"
+
+[[block]]
+block = "time"
+interval = 3
+format = "  $icon $timestamp.datetime(f:'%a %m/%d %I:%M %p')"
+
