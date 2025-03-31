@@ -45,11 +45,13 @@ Plug 'shirk/vim-gas'
 Plug 'nvim-orgmode/orgmode'
 
 Plug 'sheerun/vim-polyglot'
-Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'hrsh7th/nvim-cmp'
-Plug 'rust-lang/rust.vim'
 Plug 'hrsh7th/cmp-nvim-lsp'
+
+Plug 'neovim/nvim-lspconfig'
+Plug 'rust-lang/rust.vim'
+Plug 'lervag/vimtex'
 
 Plug 'Mofiqul/dracula.nvim'
 
