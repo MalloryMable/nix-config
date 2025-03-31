@@ -17,9 +17,18 @@
     options = "--delete-older-than 30d";
   };
 
+  
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader = {
+    grub = {
+      device = "nodev";
+      enable = true;
+      useOSProber = true;
+      efiSupport = true;
+    };
+    # systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
+  };
 
   # Backlight controller
   programs.light.enable = true;
@@ -30,8 +39,7 @@
     powerOnBoot = true;
   };
 
-  networking.hostName = "max"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.hostName = "machno"; # Define your hostname.
   
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -59,7 +67,6 @@
   };
 
   system.autoUpgrade.enable = true;
-
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users = 
@@ -95,7 +102,7 @@
   environment.systemPackages = with pkgs; [
     # Text editor 
     neovim
-    # Menu for starting apps
+    # App selection
     dmenu-rs
     # Wayland clipboard
     wl-clipboard
@@ -104,13 +111,15 @@
     # Version control
     git
     # Status bar
-    i3status-rust
+    waybar
     # C compiler
     gcc
     # C lsp
     clang-tools
     # Python
     python3
+    # Python LSP
+    pyright
     # Rust toolchain
     rustc
     cargo
@@ -120,17 +129,18 @@
     texliveFull
     # LaTeX lsp
     texlab
-    # Password Manager
-    keepassxc
+    # web dev lsp
+    svelte-language-server
     # Network tool(s)
     nfs-utils
+    # Password Manager
+    keepassxc
     # Tools that use the internet
     firefox
     gh
     signal-desktop
     discord
   ];
-
   
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -140,10 +150,13 @@
   #   enableSSHSupport = true;
   # };
 
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services = {
+    # Enables VPN Client
+    tailscale.enable = true;
+    # Enables VPN Routing for exit-nodes and subnets
+    # Enable the OpenSSH daemon.
+    # openssh.enable = true;
+  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -158,5 +171,5 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
-
 }
+
