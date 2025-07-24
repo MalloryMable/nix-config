@@ -16,8 +16,8 @@
     dates = "weekly";
     options = "--delete-older-than 30d";
   };
-  
-  # Bootloader.
+
+  # Bootloader settings for a multi boot system
   boot.loader = {
     grub = {
       device = "nodev";
@@ -25,7 +25,6 @@
       useOSProber = true;
       efiSupport = true;
     };
-    # systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
   };
 
@@ -38,8 +37,8 @@
     powerOnBoot = true;
   };
 
-  networking.hostName = "max"; # Define your hostname.
-  
+  networking.hostName = "max";
+
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -47,7 +46,7 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
+  # Time zone
   time.timeZone = "America/New_York";
 
   # Select internationalisation properties.
@@ -67,16 +66,18 @@
 
   system.autoUpgrade.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users = 
+  # User account(s)
+  users.users =
   {
     mallory = {
       isNormalUser = true;
       description = "Mallory Mable";
       extraGroups = [ "networkmanager" "wheel" "audio" "video" "vboxusers" ];
       packages = with pkgs; [
-        # 3-D printing tool
-        # cura
+        # 3D modeling tool(wayland compatable)
+        freecad-wayland
+        # 3D printing tool
+        cura-appimage
       ];
     };
   };
@@ -93,24 +94,30 @@
   # Fonts used for their icon packages
   fonts.packages = with pkgs; [
     font-awesome
-    (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"]; })
+    nerd-fonts.symbols-only
   ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    # Text editor 
+    # Terminal Emulator
+    wezterm
+    # Text editor
     neovim
     # App selection
     dmenu-rs
     # Wayland clipboard
     wl-clipboard
+    # Wayland screenshot utility
+    grim
     # File explorer
     ranger
     # Version control
     git
     # Status bar
     waybar
+
+    ## Compilers and Language Servers
     # C compiler
     gcc
     # C lsp
@@ -124,37 +131,43 @@
     cargo
     # Rust lsp
     rust-analyzer
-    # Java lsp
-    #vimPlugins.nvim-jdtls
     # LaTeX Build tools
     texliveFull
     # LaTeX lsp
     texlab
     # web dev lsp
     svelte-language-server
+
     # Network tool(s)
     nfs-utils
     # Password Manager
     keepassxc
+    # Music Player Dameon Client(CLI)
+    mpc
     # Tools that use the internet
     firefox
     gh
     signal-desktop
     discord
   ];
-  
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
 
   services = {
     # Enables VPN Client
     tailscale.enable = true;
-    # Enables VPN Routing for exit-nodes and subnets
+    # Music player set up for the user 'mallory' when mounting from a "omv NAS"
+    mpd = {
+      enable = true;
+      user = "mallory";
+      musicDirectory = "/home/mallory/mnt/omv/mallory/Music/";
+      extraConfig = ''
+        audio_output {
+          type "pulse"
+          name "Pulse Output"
+          server "unix:/run/user/1000/pulse/native"
+        }
+      '';
+      startWhenNeeded = true;
+    };
     # Enable the OpenSSH daemon.
     # openssh.enable = true;
   };
