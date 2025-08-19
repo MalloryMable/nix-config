@@ -8,6 +8,7 @@
         "sway/scratchpad",
     ],
     "modules-right": [
+        "mpd",
         "network",
         "memory",
         "cpu",
@@ -18,6 +19,29 @@
         "pulseaudio",
         "clock",
     ],
+    "mpd": {
+        "format": "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}%",
+        "format-disconnected": "Disconnected",
+        "format-stopped": "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped",
+        "unknown-tag": "N/A",
+        "interval": 5,
+        "consume-icons": {
+            "on": " "
+        },
+        "random-icons": {
+            "on": " "
+        },
+        "repeat-icons": {
+            "on": " "
+        },
+        "single-icons": {
+            "on": "1 "
+        },
+        "state-icons": {
+            "paused": "",
+            "playing": ""
+        },
+    },
     "network": {
         "format-wifi": "{essid} ({signalStrength}%) ",
         "format-ethernet": "{ipaddr}/{cidr} ",

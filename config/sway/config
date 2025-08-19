@@ -14,7 +14,7 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term foot
+set $term wezterm
 # Your preferred web browser
 set $browser firefox
 # Your preferred application launcher
@@ -35,8 +35,8 @@ output * bg ~/.config/sway/IMG_20190319_224213.jpg fill
 
 # # Screen Timeout
 exec swayidle -w \
-         timeout 300 'swaylock -f -c 000000' \
-         timeout 1200 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+         timeout 728 'swaylock -f -c 000000' \
+         timeout 720 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
          before-sleep 'swaylock -f -c 000000'
 
 # This will lock your screen after 300 seconds of inactivity, then turn off
@@ -65,7 +65,7 @@ exec swayidle -w \
     bindsym $mod+Return exec $term
 
     # Open firefox
-    bindsym $mod+g exec $browser 
+    bindsym $mod+g exec $browser
 
     # Kill focused window
     bindsym $mod+Shift+q kill
@@ -198,6 +198,9 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
+# Screenshot command
+bindsym Print grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name') | wl-copy
+
 #
 # Brightness and audio controls
 #
@@ -215,16 +218,14 @@ bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -10%
 # Mute/unmute
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 
-
-
-#
 # Status Bar:
-#
-# Read `man 5 sway-bar` for more information about this section.
 bar {
-    # When the status_command prints a new line to stdout, swaybar updates.
-    # The default just shows the current date and time.
+    position bottom
+
     swaybar_command waybar
+
 }
+
+
 
 include /etc/sway/config.d/*

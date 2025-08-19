@@ -17,17 +17,15 @@
     options = "--delete-older-than 30d";
   };
 
-  
-  # Bootloader.
-  boot.loader = {
-    grub = {
-      device = "nodev";
-      enable = true;
-      useOSProber = true;
-      efiSupport = true;
-    };
-    # systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
+ # Bootloader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  # Enables TPM 2
+  security.tpm2 = {
+    enable = true;
+    pkcs11.enable = true;  # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
+    tctiEnvironment.enable = true;
   };
 
   # Backlight controller
@@ -40,7 +38,8 @@
   };
 
   networking.hostName = "machno"; # Define your hostname.
-  
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -69,15 +68,21 @@
   system.autoUpgrade.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users = 
+  users.users =
   {
     mallory = {
       isNormalUser = true;
       description = "Mallory Mable";
-      extraGroups = [ "networkmanager" "wheel" "audio" "video" "vboxusers" ];
+      extraGroups = [ "networkmanager" "wheel" "audio" "video" "vboxusers" "tss"];
       packages = with pkgs; [
         # 3-D printing tool
-        # cura
+        orca-slicer
+        # CAD
+        freecad-wayland
+        # Media Player
+        vlc
+        # E-reader
+        calibre
       ];
     };
   };
@@ -94,32 +99,38 @@
   # Fonts used for their icon packages
   fonts.packages = with pkgs; [
     font-awesome
-    (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"]; })
+    nerd-fonts.symbols-only
   ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    # Text editor 
+    # Alternative terminal
+    wezterm
+    # Text editor
     neovim
-    # App selection
+    # Menu for starting apps
     dmenu-rs
     # Wayland clipboard
     wl-clipboard
+    # Wayland screenshot utility
+    grim
     # File explorer
     ranger
     # Version control
     git
     # Status bar
     waybar
+
+    ## Compilers and Language Servers
     # C compiler
     gcc
     # C lsp
     clang-tools
     # Python
     python3
-    # Python LSP
-    pyright
+    # Lua lsp
+    lua-language-server
     # Rust toolchain
     rustc
     cargo
@@ -129,21 +140,21 @@
     texliveFull
     # LaTeX lsp
     texlab
-    # web dev lsp
-    svelte-language-server
-    # Network tool(s)
-    nfs-utils
+
     # Password Manager
     keepassxc
+    # MPD Client
+    mpc
+    # Network tool(s)
+    nfs-utils
     # Tools that use the internet
     firefox
     gh
     signal-desktop
     discord
   ];
-  
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
+
+
   # programs.mtr.enable = true;
   # programs.gnupg.agent = {
   #   enable = true;
@@ -153,7 +164,20 @@
   services = {
     # Enables VPN Client
     tailscale.enable = true;
-    # Enables VPN Routing for exit-nodes and subnets
+    # Music player set up for the user 'mallory' when mounting from a "omv NAS"
+    mpd = {
+      enable = true;
+      user = "mallory";
+      musicDirectory = "/home/mallory/mnt/omv/Music/";
+      extraConfig = ''
+        audio_output {
+          type "pulse"
+          name "Pulse Output"
+          server "unix:/run/user/1000/pulse/native"
+        }
+      '';
+      startWhenNeeded = true;
+    };
     # Enable the OpenSSH daemon.
     # openssh.enable = true;
   };
@@ -171,5 +195,5 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
-}
 
+}
