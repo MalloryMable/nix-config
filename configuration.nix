@@ -17,19 +17,12 @@
     options = "--delete-older-than 30d";
   };
 
- # Bootloader.
+  # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Enables TPM 2
-  security.tpm2 = {
-    enable = true;
-    pkcs11.enable = true;  # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
-    tctiEnvironment.enable = true;
-  };
-
-  # Backlight controller
-  programs.light.enable = true;
+  # For dual boot clock issue(now both systems expect system clock to be on local time)
+  time.hardwareClockInLocalTime = true;
 
   # Bluetooth
   hardware.bluetooth = {
@@ -73,7 +66,7 @@
     mallory = {
       isNormalUser = true;
       description = "Mallory Mable";
-      extraGroups = [ "networkmanager" "wheel" "audio" "video" "vboxusers" "tss"];
+      extraGroups = [ "networkmanager" "wheel" "audio" "video" "tss" "vboxusers"];
       packages = with pkgs; [
         # 3-D printing tool
         orca-slicer
@@ -95,6 +88,7 @@
 
   # Virtual Machine tool
   virtualisation.virtualbox.host.enable = true;
+  boot.kernelParams = [ "kvm.enable_virt_at_load=0" ];
 
   # Fonts used for their icon packages
   fonts.packages = with pkgs; [
@@ -140,6 +134,10 @@
     texliveFull
     # LaTeX lsp
     texlab
+    # Java Development Kit(toolchain)(javac(compiler) + java(runtime))
+    jdk      # NOTE: Rolling release be sure to pin specific projects
+    # Java lsp
+    jdt-language-server
 
     # Password Manager
     keepassxc
@@ -162,8 +160,6 @@
   # };
 
   services = {
-    # Enables VPN Client
-    tailscale.enable = true;
     # Music player set up for the user 'mallory' when mounting from a "omv NAS"
     mpd = {
       enable = true;

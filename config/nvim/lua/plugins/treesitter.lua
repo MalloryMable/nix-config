@@ -7,6 +7,7 @@ local config = {
     'jsdoc',
     'json',
     'lua',
+    'java',
     'markdown',
     'markdown_inline',
     'php',
