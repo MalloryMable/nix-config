@@ -40,6 +40,8 @@ opt.wildignore = opt.wildignore + { '*/node_modules/*', '*/.git/*', '*/vendor/*'
 opt.wildmenu = true
 
 -- ui
+opt.number = true
+opt.relativenumber = true
 opt.cursorline = true
 opt.laststatus = 2
 --[[ opt.lazyredraw = true ]]

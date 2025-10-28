@@ -10,7 +10,7 @@ return {
   ts_ls = {
     format_on_save = false,
   },
-  svelte = true, 
+  --[[ svelte = true, ]]
   pyright = true,
   texlab = true,
   clangd = true,

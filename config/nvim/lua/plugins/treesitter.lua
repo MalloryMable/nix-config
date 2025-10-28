@@ -6,6 +6,7 @@ local config = {
     'javascript',
     'jsdoc',
     'json',
+    'java',
     'lua',
     'markdown',
     'markdown_inline',

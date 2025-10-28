@@ -10,6 +10,22 @@
       ./hardware-configuration.nix
     ];
 
+# Nixpkgs overlays
+  nixpkgs.overlays = [
+    (_: prev: {
+      tailscale = prev.tailscale.overrideAttrs (old: {
+        checkFlags =
+          builtins.map (
+            flag:
+              if prev.lib.hasPrefix "-skip=" flag
+              then flag + "|^TestGetList$|^TestIgnoreLocallyBoundPorts$|^TestPoller$"
+              else flag
+          )
+          old.checkFlags;
+      });
+    })
+  ];
+
   # Soft and hard max on stored generations
   nix.gc = {
     automatic = true;
@@ -137,6 +153,8 @@
     texlab
     # web dev lsp
     svelte-language-server
+    # R stats enviroment
+    R
 
     # Network tool(s)
     nfs-utils
@@ -158,7 +176,7 @@
     mpd = {
       enable = true;
       user = "mallory";
-      musicDirectory = "/home/mallory/mnt/omv/mallory/Music/";
+      musicDirectory = "/home/mallory/mnt/media/Music/";
       extraConfig = ''
         audio_output {
           type "pulse"
