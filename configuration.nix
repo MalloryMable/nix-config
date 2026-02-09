@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, ... }:
 
 {
@@ -10,7 +6,7 @@
       ./hardware-configuration.nix
     ];
 
-  # Soft and hard max on stored generations
+  # Checks once a week to clear out any month old builds
   nix.gc = {
     automatic = true;
     dates = "weekly";
@@ -32,10 +28,6 @@
 
   networking.hostName = "machno"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -76,9 +68,17 @@
         vlc
         # E-reader
         calibre
+        # Chromium for nand IDE
+        ungoogled-chromium
       ];
     };
   };
+
+  systemd.tmpfiles.rules = [
+    # Type  Path                Mode User Group Age  Argument
+    "L+   /home/mallory/server  -    -    -     -   /mnt/omv-mallory"
+    "L+   /home/mallory/media   -    -    -     -   /mnt/media"
+  ];
 
   # Wayland windows manager
   programs.sway.enable = true;
@@ -88,7 +88,7 @@
 
   # Virtual Machine tool
   virtualisation.virtualbox.host.enable = true;
-  boot.kernelParams = [ "kvm.enable_virt_at_load=0" ];
+  # boot.kernelParams = [ "kvm.enable_virt_at_load=0" ];
 
   # Fonts used for their icon packages
   fonts.packages = with pkgs; [
@@ -134,10 +134,8 @@
     texliveFull
     # LaTeX lsp
     texlab
-    # Java Development Kit(toolchain)(javac(compiler) + java(runtime))
-    jdk      # NOTE: Rolling release be sure to pin specific projects
-    # Java lsp
-    jdt-language-server
+    # R stats enviroment
+    R
 
     # Password Manager
     keepassxc
@@ -145,6 +143,8 @@
     mpc
     # Network tool(s)
     nfs-utils
+    cifs-utils
+
     # Tools that use the internet
     firefox
     gh
@@ -152,19 +152,39 @@
     discord
   ];
 
-
   # programs.mtr.enable = true;
   # programs.gnupg.agent = {
   #   enable = true;
   #   enableSSHSupport = true;
   # };
 
+  # SAMBA Server mounting logic
+  fileSystems = let
+    OMV_IP="10.0.1.9"; #NOTE: Change on move
+    automount_opts = ["x-systemd.automount" "noauto" "x-systemd.idle-timeout=0"
+    "x-systemd.device-timeout=5s" "x-systemd.mount-timeout=5s" "user" "users"
+    "soft" "rsize=65536" "actimeo=60" "noatime"];
+    mallory_creds = ["credentials=/etc/nixos/smb-secrets" "uid=1000" "gid=100"];
+  in {
+    "/mnt/media" = {
+      device = "//${OMV_IP}/jellyfin";
+      fsType = "cifs";
+      options = automount_opts ++ mallory_creds;
+      };
+
+    "/mnt/omv-mallory" = {
+      device = "//${OMV_IP}/mallory";
+      fsType = "cifs";
+      options = automount_opts ++ mallory_creds;
+    };
+  };
+
   services = {
-    # Music player set up for the user 'mallory' when mounting from a "omv NAS"
+    # Music player working from the music directory of the mounted media server
     mpd = {
       enable = true;
       user = "mallory";
-      musicDirectory = "/home/mallory/mnt/omv/Music/";
+      musicDirectory = "/mnt/media/Music/";
       extraConfig = ''
         audio_output {
           type "pulse"

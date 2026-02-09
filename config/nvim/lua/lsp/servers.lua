@@ -14,4 +14,5 @@ return {
   pyright = true,
   texlab = true,
   clangd = true,
+  jdtls = true,
 }

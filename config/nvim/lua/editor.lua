@@ -42,6 +42,8 @@ opt.wildmenu = true
 -- ui
 opt.cursorline = true
 opt.laststatus = 2
+opt.number = true
+opt.relativenumber = true
 --[[ opt.lazyredraw = true ]]
 opt.list = true
 opt.listchars = {
