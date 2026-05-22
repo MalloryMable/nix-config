@@ -214,7 +214,9 @@ bindsym $mod+Ctrl+$left exec mpc prev
 bindsym $mod+Ctrl+Left exec mpc prev
 # Toggles random on/off
 bindsym $mod+Ctrl+Up exec mpc random
+bindsym $mod+Ctrl+$up exec mpc random
 # Toggles consumption on/off
+bindsym $mod+Ctrl+$down exec mpc consume
 bindsym $mod+Ctrl+Down exec mpc consume
 
 

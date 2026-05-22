@@ -89,13 +89,6 @@ require('telescope').setup({
     lsp_code_actions = u.merge(opts_cursor, {
       prompt_title = 'Code Actions',
     }),
-    lsp_range_code_actions = u.merge(opts_vertical, {
-      prompt_title = 'Code Actions',
-    }),
-    lsp_document_diagnostics = u.merge(opts_vertical, {
-      prompt_title = 'Document Diagnostics',
-      mappings = default_mappings,
-    }),
     lsp_implementations = u.merge(opts_cursor, {
       prompt_title = 'Implementations',
       mappings = default_mappings,

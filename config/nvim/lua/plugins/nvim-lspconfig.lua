@@ -15,7 +15,12 @@ return {
         server_config = u.merge(server_config, cosmic_server_config)
       end
 
-      lspconfig[server].setup(server_config)
+      if vim.lsp.config then
+        vim.lsp.config(server, server_config)
+        vim.lsp.enable(server)
+      else -- Backwards compatable DEPRECATED
+        lspconfig[server].setup(server_config)
+      end
     end
 
     for server, _ in pairs(require('lsp.servers')) do

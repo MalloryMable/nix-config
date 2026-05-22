@@ -119,6 +119,8 @@
     ## Compilers and Language Servers
     # C compiler
     gcc
+    # Debugger
+    gdb
     # C lsp
     clang-tools
     # Python
