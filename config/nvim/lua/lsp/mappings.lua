@@ -34,7 +34,7 @@ function M.init(client, bufnr)
   buf_map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', { desc = 'Show documentation' })
 
   -- inlay hints
-  if client.supports_method('textDocument/inlayHint') then
+  if client:supports_method('textDocument/inlayHint') then
     buf_map('n', '<leader>lh', lsp_utils.toggle_inlay_hints(), { desc = 'Toggle inlay hints for buffer' })
   end
 
@@ -44,7 +44,7 @@ function M.init(client, bufnr)
   buf_map('v', '<leader>la', '<cmd>lua vim.lsp.buf.code_action()<cr>', { desc = 'Range Code Actions' })
 
   -- formatting
-  if client.supports_method('textDocument/formatting') then
+  if client:supports_method('textDocument/formatting') then
     buf_map('n', '<leader>lf', '', { desc = 'Format', callback = lsp_utils.buf_format })
     buf_map('v', '<leader>lf', '<cmd>lua vim.lsp.buf.range_formatting()<cr>', { desc = 'Range Format' })
   end

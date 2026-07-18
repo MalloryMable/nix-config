@@ -14,8 +14,17 @@
   };
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader = {
+    systemd-boot.enable = false;
+    grub = {
+      enable = true;
+      efiSupport = true;
+      device = "nodev";
+      useOSProber = true;
+      configurationLimit = 20; # how many NixOS generations to keep in menu
+    };
+    efi.canTouchEfiVariables = true;
+  };
 
   # For dual boot clock issue(now both systems expect system clock to be on local time)
   time.hardwareClockInLocalTime = true;
@@ -66,8 +75,6 @@
         freecad-wayland
         # Media Player
         vlc
-        # E-reader
-        calibre
         # Chromium for nand IDE
         ungoogled-chromium
       ];
@@ -88,7 +95,6 @@
 
   # Virtual Machine tool
   virtualisation.virtualbox.host.enable = true;
-  # boot.kernelParams = [ "kvm.enable_virt_at_load=0" ];
 
   # Fonts used for their icon packages
   fonts.packages = with pkgs; [
@@ -105,16 +111,19 @@
     neovim
     # Menu for starting apps
     dmenu-rs
+    # Rust based implementation of GREP
+    ripgrep
     # Wayland clipboard
     wl-clipboard
     # Wayland screenshot utility
     grim
-    # File explorer
-    ranger
     # Version control
     git
     # Status bar
     waybar
+
+    # nvim plugin dependencies
+    # tree-sitter
 
     ## Compilers and Language Servers
     # C compiler
@@ -125,6 +134,8 @@
     clang-tools
     # Python
     python3
+    # Python lsp
+    python3Packages.jedi-language-server
     # Lua lsp
     lua-language-server
     # Rust toolchain
@@ -138,6 +149,8 @@
     texlab
     # R stats enviroment
     R
+    # Typescript/js lsp
+    typescript-language-server
 
     # Password Manager
     keepassxc
@@ -186,14 +199,14 @@
     mpd = {
       enable = true;
       user = "mallory";
-      musicDirectory = "/mnt/media/Music/";
-      extraConfig = ''
-        audio_output {
-          type "pulse"
-          name "Pulse Output"
-          server "unix:/run/user/1000/pulse/native"
-        }
-      '';
+      settings = {
+        music_directory = "/mnt/media/Music/";
+        audio_output = [{
+          type = "pulse";
+          name = "Pulse Output";
+          server = "unix:/run/user/1000/pulse/native";
+        }];
+      };
       startWhenNeeded = true;
     };
     # Enable the OpenSSH daemon.
@@ -213,5 +226,4 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
-
 }

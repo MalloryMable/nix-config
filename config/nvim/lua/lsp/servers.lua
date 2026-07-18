@@ -11,8 +11,7 @@ return {
     format_on_save = false,
   },
   svelte = true,
-  pyright = true,
+  jedi = true,
   texlab = true,
   clangd = true,
-  jdtls = true,
 }

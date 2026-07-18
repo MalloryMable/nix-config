@@ -3,6 +3,7 @@ local config = require('config')
 require('lazy').setup('plugins', {
   lockfile = vim.fn.stdpath('config') .. '/lazy-lock.json',
   defaults = { lazy = true },
+  rocks = { enabled = false },
   ui = {
     border = config.border,
     size = { width = 0.7, height = 0.7 },

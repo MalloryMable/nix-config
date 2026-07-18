@@ -21,7 +21,7 @@ function M.on_attach(client, bufnr)
     vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
   end
 
-  if client.supports_method('textDocument/formatting') then
+  if client:supports_method('textDocument/formatting') then
     -- set up :LspFormat for clients that are capable
     vim.cmd(string.format("command! -nargs=? LspFormat lua require('utils.lsp').buf_format(%s, <q-args>)", bufnr))
 
