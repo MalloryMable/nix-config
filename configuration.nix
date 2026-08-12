@@ -6,7 +6,7 @@
       ./hardware-configuration.nix
     ];
 
-  # Checks once a week to clear out any month old builds
+  # Checks once a week to take out the trash
   nix.gc = {
     automatic = true;
     dates = "weekly";
@@ -75,12 +75,15 @@
         freecad-wayland
         # Media Player
         vlc
+        # Discord :/
+        discord
         # Chromium for nand IDE
         ungoogled-chromium
       ];
     };
   };
 
+  # Mapping my smb mounts
   systemd.tmpfiles.rules = [
     # Type  Path                Mode User Group Age  Argument
     "L+   /home/mallory/server  -    -    -     -   /mnt/omv-mallory"
@@ -115,30 +118,21 @@
     ripgrep
     # Wayland clipboard
     wl-clipboard
-    # Wayland screenshot utility
-    grim
     # Version control
     git
     # Status bar
     waybar
+    # Wayland screenshot utility
+    grim
 
-    # nvim plugin dependencies
-    # tree-sitter
-
-    ## Compilers and Language Servers
+    ## Compilers, Language Servers, and Linters
     # C compiler
     gcc
     # Debugger
     gdb
     # C lsp
     clang-tools
-    # Python
-    python3
-    # Python lsp
-    python3Packages.jedi-language-server
-    # Lua lsp
-    lua-language-server
-    # Rust toolchain
+     # Rust toolchain
     rustc
     cargo
     # Rust lsp
@@ -149,8 +143,18 @@
     texlab
     # R stats enviroment
     R
-    # Typescript/js lsp
-    typescript-language-server
+    # Lua lsp
+    lua-language-server
+    # Python
+    python3
+    # Python lsp
+    python3Packages.jedi-language-server
+    # TS/JS lsp
+    deno
+    # JS, TS, JSON, CSS linting
+    biome
+    # HTML template linter
+    djlint
 
     # Password Manager
     keepassxc
@@ -164,7 +168,6 @@
     firefox
     gh
     signal-desktop
-    discord
   ];
 
   # programs.mtr.enable = true;
