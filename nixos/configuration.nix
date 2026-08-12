@@ -8,6 +8,8 @@ in {
       ./hardware-configuration.nix
       # Server share mounting logic
       ./samba
+      # Where aliases live. Basically bashrc
+      ./aliases
     ];
 
   # Checks once a week to take out the trash
@@ -85,6 +87,9 @@ in {
   # Virtual Machine tool
   virtualisation.virtualbox.host.enable = true;
 
+  # Enable nix flakes and the 'nix' command
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   # Fonts used for their icon packages
   fonts.packages = with pkgs; [
     font-awesome
@@ -100,14 +105,16 @@ in {
     neovim
     # Menu for starting apps
     dmenu-rs
+    # Version control
+    git
+    # Rust based imlplementation of ls
+    eza
     # Rust based implementation of GREP
     ripgrep
     # Wayland clipboard
     wl-clipboard
     # Wayland screenshot utility
     grim
-    # Version control
-    git
     # Status bar
     waybar
 
