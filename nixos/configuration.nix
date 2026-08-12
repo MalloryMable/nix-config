@@ -1,37 +1,38 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, ... }:
 
-{
+let
+  vars = import ./variables.nix;
+in {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      # Server share mounting logic
+      ./samba
+      # Where aliases live. Basically bashrc
+      ./aliases
     ];
 
-  # Soft and hard max on stored generations
+  # Checks once a week to take out the trash
   nix.gc = {
     automatic = true;
     dates = "weekly";
     options = "--delete-older-than 30d";
   };
 
-
+<<<<<<< HEAD:configuration.nix
+>>>>>>> staging:nixos/configuration.nix
   # Bootloader.
   boot.loader = {
+    systemd-boot.enable = false;
     grub = {
-      device = "nodev";
       enable = true;
-      useOSProber = true;
       efiSupport = true;
+      device = "nodev";
+      useOSProber = true;
+      configurationLimit = 20; # how many NixOS generations to keep in menu
     };
-    # systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
   };
-
-  # Backlight controller
-  programs.light.enable = true;
 
   # Bluetooth
   hardware.bluetooth = {
@@ -39,18 +40,23 @@
     powerOnBoot = true;
   };
 
+<<<<<<< HEAD:configuration.nix
   networking.hostName = "[HOST NAME]"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+=======
+  networking.hostName = vars.hostName; # Define your hostname.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+>>>>>>> staging:nixos/configuration.nix
 
   # Enable networking
   networking.networkmanager.enable = true;
 
   # Set your time zone.
-  time.timeZone = "America/New_York";
+  time.timeZone = vars.timeZone;
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -72,14 +78,11 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users =
   {
-    mallory = {
+    "${vars.coreUser}" = {
       isNormalUser = true;
       description = "Mallory Mable";
-      extraGroups = [ "networkmanager" "wheel" "audio" "video" "vboxusers" ];
-      packages = with pkgs; [
-        # 3-D printing tool
-        # cura
-      ];
+      extraGroups = [ "networkmanager" "wheel" "audio" "video" "tss" "vboxusers"];
+      packages = import ./packages/desktop.nix { inherit pkgs; };
     };
   };
 
@@ -92,36 +95,48 @@
   # Virtual Machine tool
   virtualisation.virtualbox.host.enable = true;
 
+  # Enable nix flakes and the 'nix' command
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   # Fonts used for their icon packages
   fonts.packages = with pkgs; [
     font-awesome
-    (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"]; })
+    nerd-fonts.symbols-only
   ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+<<<<<<< HEAD:configuration.nix
+=======
+    # Alternative terminal
+    wezterm
+>>>>>>> staging:nixos/configuration.nix
     # Text editor
     neovim
-    # App selection
+    # Menu for starting apps
     dmenu-rs
-    # Wayland clipboard
-    wl-clipboard
-    # File explorer
-    ranger
     # Version control
     git
+    # Rust based imlplementation of ls
+    eza
+    # Rust based implementation of GREP
+    ripgrep
+    # Wayland clipboard
+    wl-clipboard
+    # Wayland screenshot utility
+    grim
     # Status bar
     waybar
+
+    ## Compilers, Language Servers, and Linters
     # C compiler
     gcc
+    # Debugger
+    gdb
     # C lsp
     clang-tools
-    # Python
-    python3
-    # Python LSP
-    pyright
-    # Rust toolchain
+     # Rust toolchain
     rustc
     cargo
     # Rust lsp
@@ -130,12 +145,29 @@
     texliveFull
     # LaTeX lsp
     texlab
-    # web dev lsp
-    svelte-language-server
-    # Network tool(s)
-    nfs-utils
+    # R stats enviroment
+    R
+    # Lua lsp
+    lua-language-server
+    # Python
+    python3
+    # Python lsp
+    python3Packages.jedi-language-server
+    # TS/JS lsp
+    deno
+    # JS, TS, JSON, CSS linting
+    biome
+    # HTML template linter
+    djlint
+
     # Password Manager
     keepassxc
+    # MPD Client
+    mpc
+    # Network tool(s)
+    nfs-utils
+    cifs-utils
+
     # Tools that use the internet
     firefox
     gh
@@ -143,8 +175,11 @@
     discord
   ];
 
+<<<<<<< HEAD:configuration.nix
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
+=======
+>>>>>>> staging:nixos/configuration.nix
   # programs.mtr.enable = true;
   # programs.gnupg.agent = {
   #   enable = true;
@@ -152,9 +187,20 @@
   # };
 
   services = {
-    # Enables VPN Client
-    tailscale.enable = true;
-    # Enables VPN Routing for exit-nodes and subnets
+    # Music player working from the music directory of the mounted media server
+    mpd = {
+      enable = true;
+      user = "${vars.coreUser}";
+      settings = {
+        music_directory = "/mnt/media/Music/";
+        audio_output = [{
+          type = "pulse";
+          name = "Pulse Output";
+          server = "unix:/run/user/${vars.uid}/pulse/native";
+        }];
+      };
+      startWhenNeeded = true;
+    };
     # Enable the OpenSSH daemon.
     # openssh.enable = true;
   };
@@ -173,4 +219,3 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
 }
-

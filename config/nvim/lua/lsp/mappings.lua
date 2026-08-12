@@ -29,25 +29,30 @@ function M.init(client, bufnr)
     '<cmd>lua vim.diagnostic.open_float(nil, { scope = "buffer", })<cr>',
     { desc = 'Show buffer diagnostics' }
   )
-
+  buf_map('n', '<leader>ldb', vim.diagnostic.setloclist, { desc = 'Buffer diagnostics (loclist)' })
+  buf_map('n', '<leader>ldw', vim.diagnostic.setqflist, { desc = 'Workspace diagnostics (qflist)' })
   -- hover
   buf_map('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', { desc = 'Show documentation' })
 
   -- inlay hints
-  if client.supports_method('textDocument/inlayHint') then
-    buf_map('n', '<leader>lh', lsp_utils.toggle_inlay_hints(), { desc = 'Toggle inlay hints for buffer' })
+  if client:supports_method('textDocument/inlayHint') then
+    buf_map('n', '<leader>lh', lsp_utils.toggle_inlay_hints, { desc = 'Toggle inlay hints for buffer' })
   end
 
   -- code actions
   buf_map('n', '<leader>r', '<cmd>lua vim.lsp.buf.rename()<cr>', { desc = 'Rename' })
-  buf_map('n', '<leader>la', '<cmd>lua vim.lsp.buf.code_actions()<cr>', { desc = 'Code Actions' })
-  buf_map('v', '<leader>la', '<cmd>lua vim.lsp.buf.range_code_actions()<cr>', { desc = 'Range Code Actions' })
+  buf_map('n', '<leader>la', '<cmd>lua vim.lsp.buf.code_action()<cr>', { desc = 'Code Actions' })
+  buf_map('v', '<leader>la', '<cmd>lua vim.lsp.buf.code_action()<cr>', { desc = 'Range Code Actions' })
 
   -- formatting
-  if client.supports_method('textDocument/formatting') then
-    buf_map('n', '<leader>lf', '', { desc = 'Format', callback = lsp_utils.buf_format })
-    buf_map('v', '<leader>lf', '<cmd>lua vim.lsp.buf.range_formatting()<cr>', { desc = 'Range Format' })
-  end
+  buf_map({ 'n', 'v' }, '<leader>lf', function()
+    -- NOTE: Uses the exteranl plugin conform
+    require('conform').format({
+      lsp_fallback = true,
+      async = false,
+      timeout_ms = 500,
+    })
+  end, { desc = 'Format with Conform' })
 
   -- lsp workspace
   buf_map('n', '<leader>lwa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<cr>', { desc = 'Add workspace folder' })

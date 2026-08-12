@@ -7,7 +7,7 @@ cmd([[
 	filetype plugin indent on
 ]])
 
-local augroup_name = 'CosmicNvimEditor'
+local augroup_name = 'NvimEditor'
 local group = vim.api.nvim_create_augroup(augroup_name, { clear = true })
 vim.api.nvim_create_autocmd('BufWritePre', {
   command = [[%s/\s\+$//e]],
@@ -42,6 +42,8 @@ opt.wildmenu = true
 -- ui
 opt.cursorline = true
 opt.laststatus = 2
+opt.number = true
+opt.relativenumber = true
 --[[ opt.lazyredraw = true ]]
 opt.list = true
 opt.listchars = {

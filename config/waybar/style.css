@@ -77,7 +77,6 @@ button:hover {
 #power-profiles-daemon,
 #mpd {
     padding: 0 10px;
-    color: #ffffff;
 }
 
 #window,
@@ -97,6 +96,7 @@ button:hover {
 
 #clock {
     background-color: #003249;
+    color: #ffffff;
 }
 
 #battery {
@@ -175,6 +175,11 @@ label:focus {
 
 #network.disconnected {
     background-color: #f53c3c;
+}
+
+#mpd {
+  font-size: 16px;
+  color: #90f0f5;
 }
 
 #pulseaudio {

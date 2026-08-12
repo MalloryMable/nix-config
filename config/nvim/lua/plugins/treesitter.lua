@@ -3,6 +3,7 @@ local config = {
     'rust',
     'css',
     'html',
+    'gotmpl',
     'javascript',
     'jsdoc',
     'json',
@@ -13,21 +14,15 @@ local config = {
     'python',
     'regex',
     'styled',
-    'svelte',
     'tsx',
     'typescript',
     'yaml',
   },
   highlight = {
     enable = true,
-    use_languagetree = true,
   },
   indent = {
     enable = true,
-  },
-  refactor = {
-    highlight_definitions = { enable = true },
-    highlight_current_scope = { enable = false },
   },
   textobjects = {
     select = {
@@ -46,15 +41,15 @@ return {
   dependencies = {
     'windwp/nvim-ts-autotag',
     'JoosepAlviste/nvim-ts-context-commentstring',
-    'nvim-treesitter/nvim-treesitter-refactor',
     'nvim-treesitter/nvim-treesitter-textobjects',
   },
-  event = 'BufEnter',
+  event = { 'BufReadPost', 'BufNewFile' },
   build = ':TSUpdate',
   config = function()
     require('nvim-treesitter.configs').setup(config)
+
     require('ts_context_commentstring').setup({
-      enable_autocmd = false,
+      enable_autocmd = true,
     })
   end,
 }
