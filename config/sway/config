@@ -26,11 +26,6 @@ set $menu dmenu_path | dmenu | xargs swaymsg exec --
 set $screenshotDir $HOME/Downloads
 set $screenshotDest $screenshotDir/screenshot_$(date +%Y-%m-%d_%H-%M-%S).png
 
-# Dual monitor setup
-# WARN: SPECIFIC TO CURRENT DESKTOP LAYOUT
-output HDMI-A-1 pos 0 0
-output DP-1 pos 1920 0
-
 # Set BG on all screens
 output * bg ~/.config/sway/IMG_20190319_224213.jpg fill
 #

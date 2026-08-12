@@ -1,6 +1,6 @@
 {
   # MACHINE SPECIFIC
-  hostName = "machno";
+  hostName = "main";
   coreUser = "mallory";
   uid = "1000";
   gid = "100";

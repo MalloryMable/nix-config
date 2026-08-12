@@ -32,9 +32,6 @@ in {
     efi.canTouchEfiVariables = true;
   };
 
-  # For dual boot clock issue(now both systems expect system clock to be on local time)
-  time.hardwareClockInLocalTime = true;
-
   # Bluetooth
   hardware.bluetooth = {
     enable = true;
