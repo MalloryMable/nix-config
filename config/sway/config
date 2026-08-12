@@ -22,7 +22,9 @@ set $browser firefox
 # on the original workspace that the command was run on.
 set $menu dmenu_path | dmenu | xargs swaymsg exec --
 
-### Output configuration
+# Screenshot Saving Logic
+set $screenshotDir $HOME/Downloads
+set $screenshotDest $screenshotDir/screenshot_$(date +%Y-%m-%d_%H-%M-%S).png
 
 # Dual monitor setup
 # WARN: SPECIFIC TO CURRENT DESKTOP LAYOUT
@@ -200,10 +202,17 @@ bindsym $mod+r mode "resize"
 # Tool commands
 #
 
-# Screenshot command
-bindsym Print exec grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name') | wl-copy
+# Screenshot and save focused monitory
+bindsym Print exec \
+    grim -o "$(swaymsg -t get_outputs | rg '\"name\":|\"focused\": true' | \
+    rg -B 1 '\"focused\": true' | awk -F'\"' 'NR==1 {print $$4}')" - | \
+    tee "$screenshotDest" | \
+    wl-copy -t image/png
 
-# mpc
+# Screenshot both/all monitors
+bindsym Shift+Print exec grim - | tee "$screenshotDest" | wl-copy -t image/png
+
+# MPC
 # Toggle pause/play
 bindsym $mod+Ctrl+space exec mpc toggle
 # Skip to the next song
@@ -224,6 +233,7 @@ bindsym $mod+Ctrl+Down exec mpc consume
 # System audio controls
 #
 # Increase volume
+# NOTE: pulse audio dependancy
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
 
 # Decrease volume
