@@ -3,18 +3,17 @@ local config = {
     'rust',
     'css',
     'html',
+    'gotmpl',
     'javascript',
     'jsdoc',
     'json',
     'lua',
-    'java',
     'markdown',
     'markdown_inline',
     'php',
     'python',
     'regex',
     'styled',
-    'svelte',
     'tsx',
     'typescript',
     'yaml',
@@ -50,7 +49,7 @@ return {
     require('nvim-treesitter.configs').setup(config)
 
     require('ts_context_commentstring').setup({
-      enable_autocmd = false,
+      enable_autocmd = true,
     })
   end,
 }

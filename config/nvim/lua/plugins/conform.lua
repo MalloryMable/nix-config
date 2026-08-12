@@ -8,17 +8,18 @@ return {
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Add any other web filetypes you need here
-        javascript = { 'prettierd' },
-        typescript = { 'prettierd' },
-        javascriptreact = { 'prettierd' },
-        typescriptreact = { 'prettierd' },
-        astro = { 'prettierd' },
+        javascript = { 'biome' },
+        typescript = { 'biome' },
+        javascriptreact = { 'biome' },
+        typescriptreact = { 'biome' },
+        css = { 'biome' },
+        json = { 'biome' },
+        html = { 'djlint' },
+        gohtmltmpl = { 'djlint' },
       },
       formatters = {
-        prettierd = {
-          env = {
-            PRETTIERD_LOCAL_PRETTIER_ONLY = 1,
-          },
+        djlint = {
+          prepend_args = { '--profile=golang' },
         },
       },
       -- Optional: Enable format-on-save
