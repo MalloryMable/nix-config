@@ -1,9 +1,13 @@
 { config, pkgs, ... }:
 
-{
+let
+  vars = import ./variables.nix;
+in {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      # Server share mounting logic
+      ./samba
     ];
 
   # Checks once a week to take out the trash
@@ -35,14 +39,14 @@
     powerOnBoot = true;
   };
 
-  networking.hostName = "machno"; # Define your hostname.
+  networking.hostName = vars.hostName; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Enable networking
   networking.networkmanager.enable = true;
 
   # Set your time zone.
-  time.timeZone = "America/New_York";
+  time.timeZone = vars.timeZone;
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -64,31 +68,13 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users =
   {
-    mallory = {
+    vars.coreUser = {
       isNormalUser = true;
       description = "Mallory Mable";
       extraGroups = [ "networkmanager" "wheel" "audio" "video" "tss" "vboxusers"];
-      packages = with pkgs; [
-        # 3-D printing tool
-        orca-slicer
-        # CAD
-        freecad-wayland
-        # Media Player
-        vlc
-        # Discord :/
-        discord
-        # Chromium for nand IDE
-        ungoogled-chromium
-      ];
+      packages = import ./packages/desktop.nix { inherit pkgs; };
     };
   };
-
-  # Mapping my smb mounts
-  systemd.tmpfiles.rules = [
-    # Type  Path                Mode User Group Age  Argument
-    "L+   /home/mallory/server  -    -    -     -   /mnt/omv-mallory"
-    "L+   /home/mallory/media   -    -    -     -   /mnt/media"
-  ];
 
   # Wayland windows manager
   programs.sway.enable = true;
@@ -118,12 +104,12 @@
     ripgrep
     # Wayland clipboard
     wl-clipboard
+    # Wayland screenshot utility
+    grim
     # Version control
     git
     # Status bar
     waybar
-    # Wayland screenshot utility
-    grim
 
     ## Compilers, Language Servers, and Linters
     # C compiler
@@ -168,6 +154,7 @@
     firefox
     gh
     signal-desktop
+    discord
   ];
 
   # programs.mtr.enable = true;
@@ -176,32 +163,11 @@
   #   enableSSHSupport = true;
   # };
 
-  # SAMBA Server mounting logic
-  fileSystems = let
-    OMV_IP="10.0.1.9"; #NOTE: Change on move
-    automount_opts = ["x-systemd.automount" "noauto" "x-systemd.idle-timeout=0"
-    "x-systemd.device-timeout=5s" "x-systemd.mount-timeout=5s" "user" "users"
-    "soft" "rsize=65536" "actimeo=60" "noatime"];
-    mallory_creds = ["credentials=/etc/nixos/smb-secrets" "uid=1000" "gid=100"];
-  in {
-    "/mnt/media" = {
-      device = "//${OMV_IP}/jellyfin";
-      fsType = "cifs";
-      options = automount_opts ++ mallory_creds;
-      };
-
-    "/mnt/omv-mallory" = {
-      device = "//${OMV_IP}/mallory";
-      fsType = "cifs";
-      options = automount_opts ++ mallory_creds;
-    };
-  };
-
   services = {
     # Music player working from the music directory of the mounted media server
     mpd = {
       enable = true;
-      user = "mallory";
+      user = "${vars.coreUser}";
       settings = {
         music_directory = "/mnt/media/Music/";
         audio_output = [{
