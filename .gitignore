@@ -1,4 +1,4 @@
 config/nvim/lazy-lock.json
 secret.tomb
 secret.tomb.key
-
+nixos/hardware-configuration.nix
