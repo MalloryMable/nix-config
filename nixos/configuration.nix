@@ -1,32 +1,18 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, ... }:
 
-{
+let
+  vars = import ./variables.nix;
+in {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      # Server share mounting logic
+      ./samba
+      # Where aliases live. Basically bashrc
+      ./aliases
     ];
 
-# Nixpkgs overlays
-  nixpkgs.overlays = [
-    (_: prev: {
-      tailscale = prev.tailscale.overrideAttrs (old: {
-        checkFlags =
-          builtins.map (
-            flag:
-              if prev.lib.hasPrefix "-skip=" flag
-              then flag + "|^TestGetList$|^TestIgnoreLocallyBoundPorts$|^TestPoller$"
-              else flag
-          )
-          old.checkFlags;
-      });
-    })
-  ];
-
-  # Soft and hard max on stored generations
+  # Checks once a week to take out the trash
   nix.gc = {
     automatic = true;
     dates = "weekly";
@@ -34,18 +20,18 @@
   };
 
   # Bootloader settings for a multi boot system
+  # Bootloader.
   boot.loader = {
+    systemd-boot.enable = false;
     grub = {
-      device = "nodev";
       enable = true;
-      useOSProber = true;
       efiSupport = true;
+      device = "nodev";
+      useOSProber = true;
+      configurationLimit = 20; # how many NixOS generations to keep in menu
     };
     efi.canTouchEfiVariables = true;
   };
-
-  # Backlight controller
-  programs.light.enable = true;
 
   # Bluetooth
   hardware.bluetooth = {
@@ -53,17 +39,19 @@
     powerOnBoot = true;
   };
 
-  networking.hostName = "max";
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
+  networking.hostName = vars.hostName; # Define your hostname.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
   # Enable networking
   networking.networkmanager.enable = true;
 
-  # Time zone
-  time.timeZone = "America/New_York";
+  # Set your time zone.
+  time.timeZone = vars.timeZone;
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -82,19 +70,15 @@
 
   system.autoUpgrade.enable = true;
 
-  # User account(s)
+
+  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users =
   {
-    mallory = {
+    "${vars.coreUser}" = {
       isNormalUser = true;
       description = "Mallory Mable";
-      extraGroups = [ "networkmanager" "wheel" "audio" "video" "vboxusers" ];
-      packages = with pkgs; [
-        # 3D modeling tool(wayland compatable)
-        freecad-wayland
-        # 3D printing tool
-        cura-appimage
-      ];
+      extraGroups = [ "networkmanager" "wheel" "audio" "video" "tss" "vboxusers"];
+      packages = import ./packages/laptop.nix { inherit pkgs; };
     };
   };
 
@@ -107,6 +91,9 @@
   # Virtual Machine tool
   virtualisation.virtualbox.host.enable = true;
 
+  # Enable nix flakes and the 'nix' command
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   # Fonts used for their icon packages
   fonts.packages = with pkgs; [
     font-awesome
@@ -116,33 +103,33 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    # Terminal Emulator
+    # Alternative terminal
     wezterm
     # Text editor
     neovim
-    # App selection
+    # Menu for starting apps
     dmenu-rs
+    # Version control
+    git
+    # Rust based imlplementation of ls
+    eza
+    # Rust based implementation of GREP
+    ripgrep
     # Wayland clipboard
     wl-clipboard
     # Wayland screenshot utility
     grim
-    # File explorer
-    ranger
-    # Version control
-    git
     # Status bar
     waybar
 
-    ## Compilers and Language Servers
+    ## Compilers, Language Servers, and Linters
     # C compiler
     gcc
+    # Debugger
+    gdb
     # C lsp
     clang-tools
-    # Python
-    python3
-    # Python LSP
-    pyright
-    # Rust toolchain
+     # Rust toolchain
     rustc
     cargo
     # Rust lsp
@@ -151,17 +138,29 @@
     texliveFull
     # LaTeX lsp
     texlab
-    # web dev lsp
-    svelte-language-server
     # R stats enviroment
     R
+    # Lua lsp
+    lua-language-server
+    # Python
+    python3
+    # Python lsp
+    python3Packages.jedi-language-server
+    # TS/JS lsp
+    deno
+    # JS, TS, JSON, CSS linting
+    biome
+    # HTML template linter
+    djlint
 
-    # Network tool(s)
-    nfs-utils
     # Password Manager
     keepassxc
-    # Music Player Dameon Client(CLI)
+    # MPD Client
     mpc
+    # Network tool(s)
+    nfs-utils
+    cifs-utils
+
     # Tools that use the internet
     firefox
     gh
@@ -169,21 +168,27 @@
     discord
   ];
 
+  # Some programs need SUID wrappers, can be configured further or are
+  # started in user sessions.
+
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   enableSSHSupport = true;
+  # };
+
   services = {
-    # Enables VPN Client
-    tailscale.enable = true;
-    # Music player set up for the user 'mallory' when mounting from a "omv NAS"
+    # Music player working from the music directory of the mounted media server
     mpd = {
       enable = true;
-      user = "mallory";
-      musicDirectory = "/home/mallory/mnt/media/Music/";
-      extraConfig = ''
-        audio_output {
-          type "pulse"
-          name "Pulse Output"
-          server "unix:/run/user/1000/pulse/native"
-        }
-      '';
+      user = "${vars.coreUser}";
+      settings = {
+        music_directory = "/mnt/media/Music/";
+        audio_output = [{
+          type = "pulse";
+          name = "Pulse Output";
+          server = "unix:/run/user/${vars.uid}/pulse/native";
+        }];
+      };
       startWhenNeeded = true;
     };
     # Enable the OpenSSH daemon.
@@ -204,4 +209,3 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
 }
-

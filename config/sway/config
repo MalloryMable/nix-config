@@ -22,26 +22,21 @@ set $browser firefox
 # on the original workspace that the command was run on.
 set $menu dmenu_path | dmenu | xargs swaymsg exec --
 
-### Output configuration
-#
-# Default wallpaper (more resolutions are available in /run/current-system/sw/share/backgrounds/sway/)
+# Screenshot Saving Logic
+set $screenshotDir $HOME/Downloads
+set $screenshotDest $screenshotDir/screenshot_$(date +%Y-%m-%d_%H-%M-%S).png
+
+# Set BG on all screens
 output * bg ~/.config/sway/IMG_20190319_224213.jpg fill
 #
 # Example configuration:
 #
-#   output HDMI-A-1 resolution 1920x1080 position 1920,0
-#
-# You can get the names of your outputs by running: swaymsg -t get_outputs
 
 # # Screen Timeout
 exec swayidle -w \
          timeout 305 'swaylock -f -c 000000' \
          timeout 300 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
          before-sleep 'swaylock -f -c 000000'
-
-# This will lock your screen after 300 seconds of inactivity, then turn off
-# your displays after another 300 seconds, and turn your screens back on when
-# resumed. It will also lock your screen before your computer goes to sleep.
 
 ### Input configuration
 #
@@ -198,38 +193,57 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-# Screenshot command
-bindsym Print grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name') | wl-copy
 
 #
-# Brightness and audio controls
+# Tool commands
 #
-# Increase brightness
-bindsym XF86MonBrightnessUp exec light -A 10
 
-# Decrease brightness
-bindsym XF86MonBrightnessDown exec light -U 10
+# Screenshot
+bindsym Print exec grim - | tee "$screenshotDest" | wl-copy -t image/png
+
+# MPC
+# Toggle pause/play
+bindsym $mod+Ctrl+space exec mpc toggle
+# Skip to the next song
+bindsym $mod+Ctrl+$right exec mpc next
+bindsym $mod+Ctrl+Right exec mpc next
+# Skip to the last song #NOTE: Make sure consume is off
+bindsym $mod+Ctrl+$left exec mpc prev
+bindsym $mod+Ctrl+Left exec mpc prev
+# Toggles random on/off
+bindsym $mod+Ctrl+Up exec mpc random
+bindsym $mod+Ctrl+$up exec mpc random
+# Toggles consumption on/off
+bindsym $mod+Ctrl+$down exec mpc consume
+bindsym $mod+Ctrl+Down exec mpc consume
+
+
+
+
+
+#
+# System audio controls
+#
 # Increase volume
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +10%
+# NOTE: pulse audio dependancy
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
 
 # Decrease volume
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -10%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 
 # Mute/unmute
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 
-
-
-#
 # Status Bar:
-#
-# Read `man 5 sway-bar` for more information about this section.
 bar {
     position bottom
 
     # When the status_command prints a new line to stdout, swaybar updates.
     # The default just shows the current date and time.
     swaybar_command waybar
+
 }
+
+
 
 include /etc/sway/config.d/*

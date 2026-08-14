@@ -2,8 +2,10 @@ local config = require('config')
 
 return {
   'folke/which-key.nvim',
+  dependencies = { "echasnovski/mini.icons", opts = {} },
   config = function()
     local wk = require('which-key')
+    require('mini.icons').setup()
     wk.setup({
       win = {
         border = config.border,
@@ -21,20 +23,20 @@ return {
     })
 
     wk.add({
-      { '<leader>c', group = 'quickfix' },
-      { '<leader>f', group = 'find' },
+      { '<leader>c',  group = 'quickfix' },
+      { '<leader>f',  group = 'find' },
       { '<leader>ht', group = 'toggle' },
-      { '<leader>k', group = 'buffer' },
-      { '<leader>l', group = 'lsp' },
+      { '<leader>k',  group = 'buffer' },
+      { '<leader>l',  group = 'lsp' },
       { '<leader>ld', group = 'diagnostics' },
       { '<leader>lt', group = 'toggle' },
       { '<leader>lw', group = 'workspace' },
-      { '<leader>p', group = 'lazy (plugins)' },
-      { '<leader>s', group = 'session' },
-      { '<leader>t', group = 'tab' },
-      { '<leader>v', group = 'git (vsc)' },
+      { '<leader>p',  group = 'lazy (plugins)' },
+      { '<leader>s',  group = 'session' },
+      { '<leader>t',  group = 'tab' },
+      { '<leader>v',  group = 'git (vsc)' },
       { '<leader>vt', group = 'toggle' },
-      { '<leader>x', group = 'trouble' },
+      { '<leader>x',  group = 'trouble' },
     })
   end,
   event = 'VeryLazy',

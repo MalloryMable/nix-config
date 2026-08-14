@@ -28,6 +28,13 @@ local custom_sections = {
       modified = icons.diff_modified,
     },
   },
+  formatted_filetype = {
+    'filetype',
+    fmt = function(str)
+      if str == 'gohtmltmpl' then return 'Hugo' end
+      return str
+    end,
+  },
 }
 
 local plugin_config = {
@@ -85,7 +92,7 @@ local plugin_config = {
         'macro-recording',
         fmt = utils.show_macro_recording,
       },
-      'filetype',
+      custom_sections.formatted_filetype,
     },
     lualine_y = {},
     lualine_z = {},
@@ -94,7 +101,7 @@ local plugin_config = {
     lualine_a = { utils.get_short_cwd },
     lualine_b = { custom_sections.branch },
     lualine_c = { custom_sections.relativeFilePath },
-    lualine_x = { 'filetype' },
+    lualine_x = { custom_sections.formatted_filetype, },
     lualine_y = {},
     lualine_z = {},
   },

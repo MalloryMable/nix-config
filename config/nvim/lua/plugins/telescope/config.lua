@@ -68,10 +68,10 @@ require('telescope').setup({
   },
   extensions = {
     fzf = {
-      fuzzy = true, -- false will only do exact matching
+      fuzzy = true,                   -- false will only do exact matching
       override_generic_sorter = true, -- override the generic sorter
-      override_file_sorter = true, -- override the file sorter
-      case_mode = 'smart_case', -- or "ignore_case" or "respect_case"
+      override_file_sorter = true,    -- override the file sorter
+      case_mode = 'smart_case',       -- or "ignore_case" or "respect_case"
       -- the default case_mode is "smart_case"
     },
   },
@@ -89,13 +89,6 @@ require('telescope').setup({
     lsp_code_actions = u.merge(opts_cursor, {
       prompt_title = 'Code Actions',
     }),
-    lsp_range_code_actions = u.merge(opts_vertical, {
-      prompt_title = 'Code Actions',
-    }),
-    lsp_document_diagnostics = u.merge(opts_vertical, {
-      prompt_title = 'Document Diagnostics',
-      mappings = default_mappings,
-    }),
     lsp_implementations = u.merge(opts_cursor, {
       prompt_title = 'Implementations',
       mappings = default_mappings,
@@ -112,6 +105,8 @@ require('telescope').setup({
       prompt_title = 'Search Project',
       mappings = default_mappings,
       hidden = true,
+      -- Used in place of installing `fd`
+      find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
     }),
     diagnostics = u.merge(opts_vertical, {
       mappings = default_mappings,

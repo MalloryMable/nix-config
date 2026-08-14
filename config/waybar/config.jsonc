@@ -20,9 +20,9 @@
         "clock",
     ],
     "mpd": {
-        "format": "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩ {volume}%",
+        "format": "{stateIcon}  {title} - {album} - {artist} ({elapsedTime:%M:%S}/{totalTime:%M:%S}) ⸨{songPosition}|{queueLength}⸩  {volume}% {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}",
         "format-disconnected": "Disconnected",
-        "format-stopped": "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped",
+        "format-stopped": "Stopped {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}",
         "unknown-tag": "N/A",
         "interval": 5,
         "consume-icons": {
