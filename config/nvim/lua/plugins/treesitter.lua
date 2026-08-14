@@ -14,8 +14,6 @@ local config = {
     'php',
     'python',
     'regex',
-    'styled',
-    'tsx',
     'typescript',
     'yaml',
   },
@@ -41,16 +39,11 @@ return {
   'nvim-treesitter/nvim-treesitter',
   dependencies = {
     'windwp/nvim-ts-autotag',
-    'JoosepAlviste/nvim-ts-context-commentstring',
     'nvim-treesitter/nvim-treesitter-textobjects',
   },
   event = { 'BufReadPost', 'BufNewFile' },
   build = ':TSUpdate',
   config = function()
-    require('nvim-treesitter.configs').setup(config)
-
-    require('ts_context_commentstring').setup({
-      enable_autocmd = true,
-    })
+    require('nvim-treesitter.config').setup(config)
   end,
 }
