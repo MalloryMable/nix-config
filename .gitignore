@@ -3,3 +3,4 @@ secret.tomb
 secret.tomb.key
 smg-secrets
 nixos/configurations.nix
+nixos/flake.lock
