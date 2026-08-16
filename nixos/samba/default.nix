@@ -8,7 +8,13 @@ let
     "soft" "rsize=65536" "actimeo=60" "noatime"
   ];
   # NOTE: mallory_creds becuase mallory is the smb user stored in the creds in smb-secrets
-  mallory_creds = ["credentials=/etc/nixos/smb-secrets" "uid=${vars.uid}" "gid=${vars.gid}"];
+  mallory_creds = [
+    "credentials=/etc/nixos/smb-secrets"
+    "uid=${vars.uid}"
+    "gid=${vars.gid}"
+    "file_mode=0644"
+    "dir_mode=0755"
+  ];
 in {
   # Mapping my smb mounts
   systemd.tmpfiles.rules = [

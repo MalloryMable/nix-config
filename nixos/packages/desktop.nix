@@ -7,6 +7,8 @@ with pkgs; [
   freecad-wayland
   # Media Player
   vlc
+  # Audio editing
+  audacity
   # Chromium for nand IDE
   ungoogled-chromium
 ]

@@ -10,6 +10,8 @@ in {
       ./samba
       # Where aliases live. Basically bashrc
       ./aliases
+      # Define desired user enviroment to other apps
+      ./environment
     ];
 
   # Checks once a week to take out the trash
@@ -113,10 +115,12 @@ in {
     ripgrep
     # Wayland clipboard
     wl-clipboard
-    # Wayland screenshot utility
-    grim
     # Status bar
     waybar
+    # MD Reader
+    inlyne
+    # Wayland screenshot utility
+    grim
 
     ## Compilers, Language Servers, and Linters
     # C compiler
